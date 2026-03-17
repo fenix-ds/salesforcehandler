@@ -8,12 +8,12 @@ import (
 	"net/http"
 )
 
-func (sf *SalesForceHandler) Get(query string) (map[string]interface{}, error) {
+func (sf *SalesForceHandler) Get(query string) (any, error) {
 	if len(query) == 0 {
 		return nil, fmt.Errorf("query was not sent.")
 	}
 
-	reqUrlAddress := fmt.Sprintf("%s/query?q=%s", sf.urls.Get, query)
+	reqUrlAddress := fmt.Sprintf("%s/query?q=%s", sf.urls.Api, query)
 	reqAuthorization := fmt.Sprintf("Bearer %s", *sf.accessToken)
 
 	req, err := http.NewRequest(http.MethodGet, reqUrlAddress, nil)
@@ -59,7 +59,7 @@ func (sf *SalesForceHandler) Patch(param *SalesForcePatchObject) error {
 		return err
 	}
 
-	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/%s", sf.urls.Patch, param.Name, param.Id)
+	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/%s", sf.urls.Api, param.Name, param.Id)
 	reqAuthorization := fmt.Sprintf("Bearer %s", *sf.accessToken)
 
 	payload, err := json.Marshal(param.Data)
@@ -103,7 +103,7 @@ func (sf *SalesForceHandler) DownloadFile(param *SalesForceDownloadFilesParam) (
 		return nil, err
 	}
 
-	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/Document/%s", sf.urls.Patch, param.Name, param.Id)
+	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/%s/Document", sf.urls.Api, param.Name, param.Id)
 	reqAuthorization := fmt.Sprintf("Bearer %s", *sf.accessToken)
 
 	req, err := http.NewRequest(http.MethodGet, reqUrlAddress, nil)

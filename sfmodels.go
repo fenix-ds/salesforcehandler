@@ -9,8 +9,7 @@ type SalesForceParam struct {
 
 type SalesForceUrls struct {
 	Autentication string
-	Get           string
-	Patch         string
+	Api           string
 }
 
 type SalesForceAutentication struct {
@@ -39,7 +38,7 @@ func (sf *SalesForceParam) checkdata() error {
 }
 
 func (sf *SalesForceUrls) checkdata() error {
-	if len(sf.Get) == 0 || len(sf.Patch) == 0 {
+	if len(sf.Api) == 0 {
 		return fmt.Errorf("url's not found")
 	}
 
