@@ -67,3 +67,16 @@ func (sf *SalesForcePatchObject) checkdata() error {
 
 	return nil
 }
+
+type SalesForceDownloadFilesParam struct {
+	Name string
+	Id   string
+}
+
+func (sf *SalesForceDownloadFilesParam) checkdata() error {
+	if len(sf.Name) == 0 || len(sf.Id) == 0 {
+		return fmt.Errorf("data for downloading the file was not found")
+	}
+
+	return nil
+}

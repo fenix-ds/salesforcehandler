@@ -95,3 +95,45 @@ func (sf *SalesForceHandler) Patch(param *SalesForcePatchObject) error {
 
 	return nil
 }
+
+func (sf *SalesForceHandler) DownloadFile(param *SalesForceDownloadFilesParam) ([]byte, error) {
+	if param == nil {
+		return nil, fmt.Errorf("data for downloading the file was not found")
+	} else if err := param.checkdata(); err != nil {
+		return nil, err
+	}
+
+	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/Document/%s", sf.urls.Patch, param.Name, param.Id)
+	reqAuthorization := fmt.Sprintf("Bearer %s", *sf.accessToken)
+
+	req, err := http.NewRequest(http.MethodGet, reqUrlAddress, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Authorization", reqAuthorization)
+
+	client := &http.Client{}
+
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("erro ao executar request: %w", err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode >= 300 {
+		bodyErr, err := io.ReadAll(res.Body)
+		if err != nil {
+			return nil, fmt.Errorf("error in request. status code: %d", res.StatusCode)
+		}
+
+		return nil, fmt.Errorf("error in request. status code: %d | details: %s", res.StatusCode, string(bodyErr))
+	}
+
+	base64Bytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, fmt.Errorf("erro ao ler body: %w", err)
+	}
+
+	return base64Bytes, nil
+}
