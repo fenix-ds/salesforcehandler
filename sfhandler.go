@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (sf *SalesForceHandler) Get(query string) (any, error) {
+func (sf *SalesForceHandler) Get(query string) (*SalesforceResult, error) {
 	if len(query) == 0 {
 		return nil, fmt.Errorf("query was not sent.")
 	}
@@ -44,12 +44,12 @@ func (sf *SalesForceHandler) Get(query string) (any, error) {
 		return nil, err
 	}
 
-	var result map[string]interface{}
+	var result SalesforceResult
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 func (sf *SalesForceHandler) Patch(param *SalesForcePatchObject) error {

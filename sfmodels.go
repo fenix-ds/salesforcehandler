@@ -79,3 +79,9 @@ func (sf *SalesForceDownloadFilesParam) checkdata() error {
 
 	return nil
 }
+
+type SalesforceResult struct {
+	TotalSize int              `json:"totalSize"`
+	Done      bool             `json:"done"`
+	Records   []map[string]any `json:"records"`
+}
