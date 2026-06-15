@@ -13,8 +13,13 @@ func (sf *SalesForceHandler) Get(query string) (*SalesforceResult, error) {
 		return nil, fmt.Errorf("query was not sent.")
 	}
 
-	reqUrlAddress := fmt.Sprintf("%s/query?q=%s", sf.urls.Api, query)
-	reqAuthorization := fmt.Sprintf("Bearer %s", *sf.accessToken)
+	accessToken, err := _SalesForceLogin(&sf._Urls.Autentication, sf._Autentication)
+	if err != nil {
+		return nil, fmt.Errorf("error in request login. details: %s", err)
+	}
+
+	reqUrlAddress := fmt.Sprintf("%s/query?q=%s", sf._Urls.Api, query)
+	reqAuthorization := fmt.Sprintf("Bearer %s", *accessToken)
 
 	req, err := http.NewRequest(http.MethodGet, reqUrlAddress, nil)
 	if err != nil {
@@ -55,12 +60,17 @@ func (sf *SalesForceHandler) Get(query string) (*SalesforceResult, error) {
 func (sf *SalesForceHandler) Patch(param *SalesForcePatchObject) error {
 	if param == nil {
 		return fmt.Errorf("data for object update not found")
-	} else if err := param.checkdata(); err != nil {
+	} else if err := param._CheckData(); err != nil {
 		return err
 	}
 
-	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/%s", sf.urls.Api, param.Name, param.Id)
-	reqAuthorization := fmt.Sprintf("Bearer %s", *sf.accessToken)
+	accessToken, err := _SalesForceLogin(&sf._Urls.Autentication, sf._Autentication)
+	if err != nil {
+		return fmt.Errorf("error in request login. details: %s", err)
+	}
+
+	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/%s", sf._Urls.Api, param.Name, param.Id)
+	reqAuthorization := fmt.Sprintf("Bearer %s", *accessToken)
 
 	payload, err := json.Marshal(param.Data)
 	if err != nil {
@@ -85,6 +95,7 @@ func (sf *SalesForceHandler) Patch(param *SalesForcePatchObject) error {
 	defer res.Body.Close()
 
 	if res.StatusCode >= 300 {
+
 		bodyErr, err := io.ReadAll(res.Body)
 		if err != nil {
 			return fmt.Errorf("error in request. status code: %d", res.StatusCode)
@@ -99,12 +110,17 @@ func (sf *SalesForceHandler) Patch(param *SalesForcePatchObject) error {
 func (sf *SalesForceHandler) DownloadFile(param *SalesForceDownloadFilesParam) ([]byte, error) {
 	if param == nil {
 		return nil, fmt.Errorf("data for downloading the file was not found")
-	} else if err := param.checkdata(); err != nil {
+	} else if err := param._CheckData(); err != nil {
 		return nil, err
 	}
 
-	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/%s/Document", sf.urls.Api, param.Name, param.Id)
-	reqAuthorization := fmt.Sprintf("Bearer %s", *sf.accessToken)
+	accessToken, err := _SalesForceLogin(&sf._Urls.Autentication, sf._Autentication)
+	if err != nil {
+		return nil, fmt.Errorf("error in request login. details: %s", err)
+	}
+
+	reqUrlAddress := fmt.Sprintf("%s/sobjects/%s/%s/Document", sf._Urls.Api, param.Name, param.Id)
+	reqAuthorization := fmt.Sprintf("Bearer %s", *accessToken)
 
 	req, err := http.NewRequest(http.MethodGet, reqUrlAddress, nil)
 	if err != nil {

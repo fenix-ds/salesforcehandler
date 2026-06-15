@@ -21,23 +21,23 @@ type SalesForceAutentication struct {
 }
 
 type SalesForceHandler struct {
-	urls        *SalesForceUrls
-	accessToken *string
+	_Urls          *SalesForceUrls
+	_Autentication *SalesForceAutentication
 }
 
-func (sf *SalesForceParam) checkdata() error {
-	if err := sf.Urls.checkdata(); err != nil {
+func (sf *SalesForceParam) _CheckData() error {
+	if err := sf.Urls._CheckData(); err != nil {
 		return err
 	}
 
-	if err := sf.Autentication.checkdata(); err != nil {
+	if err := sf.Autentication._CheckData(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (sf *SalesForceUrls) checkdata() error {
+func (sf *SalesForceUrls) _CheckData() error {
 	if len(sf.Api) == 0 {
 		return fmt.Errorf("url's not found")
 	}
@@ -45,7 +45,7 @@ func (sf *SalesForceUrls) checkdata() error {
 	return nil
 }
 
-func (sf *SalesForceAutentication) checkdata() error {
+func (sf *SalesForceAutentication) _CheckData() error {
 	if len(sf.GrantType) == 0 || len(sf.ClientId) == 0 || len(sf.ClientSecret) == 0 || len(sf.UserName) == 0 || len(sf.Password) == 0 {
 		return fmt.Errorf("salesforce authentication data not found")
 	}
@@ -59,7 +59,7 @@ type SalesForcePatchObject struct {
 	Data any
 }
 
-func (sf *SalesForcePatchObject) checkdata() error {
+func (sf *SalesForcePatchObject) _CheckData() error {
 	if len(sf.Name) == 0 || len(sf.Id) == 0 || sf.Data == nil {
 		return fmt.Errorf("data for object update not found")
 	}
@@ -72,7 +72,7 @@ type SalesForceDownloadFilesParam struct {
 	Id   string
 }
 
-func (sf *SalesForceDownloadFilesParam) checkdata() error {
+func (sf *SalesForceDownloadFilesParam) _CheckData() error {
 	if len(sf.Name) == 0 || len(sf.Id) == 0 {
 		return fmt.Errorf("data for downloading the file was not found")
 	}

@@ -10,18 +10,18 @@ import (
 )
 
 func NewSalesForceHandler(param SalesForceParam) (*SalesForceHandler, error) {
-	if err := param.checkdata(); err != nil {
+	if err := param._CheckData(); err != nil {
 		return nil, err
 	}
 
-	accessToken, err := _SalesForceLogin(&param.Urls.Autentication, &param.Autentication)
+	_, err := _SalesForceLogin(&param.Urls.Autentication, &param.Autentication)
 	if err != nil {
 		return nil, err
 	}
 
 	return &SalesForceHandler{
-		urls:        &param.Urls,
-		accessToken: accessToken,
+		_Urls:          &param.Urls,
+		_Autentication: &param.Autentication,
 	}, nil
 }
 
